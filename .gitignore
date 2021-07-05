@@ -3,3 +3,4 @@
 *.out
 tmp*
 9cc
+.vscode/*
