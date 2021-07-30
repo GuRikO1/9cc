@@ -3,14 +3,12 @@ SRCS=$(wildcard *.c)
 OBJS=$(SRCS:.c=.o)
 
 9cc: $(OBJS)
-    $(CC) -o 9cc $(OBJS) $(LDFLAGS)
-
-$(OBJS): 9cc.h
+	$(CC) -o 9cc $(OBJS) $(LDFLAGS)
 
 test: 9cc
-    ./test.sh
+	./test.sh
 
 clean:
-    rm -f 9cc *.o *~ tmp*
+	rm -f 9cc *.o *.out *~ tmp*
 
 .PHONY: test clean
