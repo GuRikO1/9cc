@@ -31,12 +31,13 @@ int expect_number() {
 }
 
 
-bool consume_indent() {
+Token *consume_ident() {
     if (token->kind != TK_IDENT) {
-        return false;
+        return NULL;
     }
+    Token *tok = token;
     token = token->next;
-    return true;
+    return tok;
 }
 
 
@@ -71,10 +72,14 @@ Node *primary() {
         return node;
     }
 
-    if (consume_indent()) {
+    Token *tok = consume_ident();
+    if (tok) {
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_LVAR;
-        node->offset = (token->str[0] - 'a' + 1) * 8;
+#ifdef DEBUG
+        printf("in primary(): %c\n", tok->str[0]);
+#endif
+        node->offset = (tok->str[0] - 'a' + 1) * 8;
         return node;
     }
 
@@ -183,11 +188,11 @@ Node *stmt() {
 void *program() {
     int i = 0;
     while (!at_eof()) {
-        code[++i] = stmt();
+        code[i++] = stmt();
 #ifdef DEBUG
         printf("in program(): i=%d\n", i);
         printf("in program(): %d\n", code[0]->kind == ND_NUM);
 #endif
     }
-    code[++i] = NULL;
+    code[i++] = NULL;
 }

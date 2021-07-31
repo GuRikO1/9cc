@@ -17,6 +17,11 @@ int main(int argc, char **argv) {
     printf(".global main\n");
     printf("main:\n");
 
+    printf("\tpush rbp\n");
+    printf("\tmov rbp, rsp\n");
+    printf("\tsub rsp, 208\n");
+
+
 #ifdef DEBUG
     printf("%d\n", code[0]->kind==ND_NUM);
 #endif
@@ -27,7 +32,7 @@ int main(int argc, char **argv) {
     }
 
     printf("\tmov rsp, rbp\n");
-    printf("\tpop rbp");
+    printf("\tpop rbp\n");
     printf("\tret\n");
     return 0;
 }

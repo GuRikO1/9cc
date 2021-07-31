@@ -5,7 +5,7 @@
 #include<stdlib.h>
 #include<string.h>
 
-#define DEBUG
+// #define DEBUG
 
 typedef enum {
     TK_RESERVED,
