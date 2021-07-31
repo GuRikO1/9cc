@@ -58,5 +58,6 @@ Node *code[100];
 void error_at(char *loc, char *fmt, ...);
 void error(char *fmt, ...);
 Token *tokenize(char *p);
+Node *stmt();
 void *program();
 void gen(Node *node);
