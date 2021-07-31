@@ -31,8 +31,8 @@ int expect_number() {
 }
 
 
-Token *consume_ident() {
-    if (token->kind != TK_IDENT) {
+Token *consume_kind(TokenKind kind) {
+    if (token->kind != kind) {
         return NULL;
     }
     Token *tok = token;
@@ -82,7 +82,7 @@ Node *primary() {
         return node;
     }
 
-    Token *tok = consume_ident();
+    Token *tok = consume_kind(TK_IDENT);
     if (tok) {
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_LVAR;
@@ -195,7 +195,15 @@ Node *expr() {
 
 
 Node *stmt() {
-    Node *node = expr();
+    Node *node;
+    if (consume_kind(TK_RETURN))  {
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_RETURN;
+        node->lhs = expr();
+    } else {
+        node = expr();
+    }
+
     expect(";");
 #ifdef DEBUG
     printf("in stmt(): %d\n", node->kind == ND_NUM);

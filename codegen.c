@@ -13,6 +13,13 @@ void gen_lval(Node *node) {
 
 void gen(Node *node) {
     switch (node->kind) {
+        case ND_RETURN:
+            gen(node->lhs);
+            printf("\tpop rax\n");
+            printf("\tmov rsp, rbp\n");
+            printf("\tpop rbp\n");
+            printf("\tret\n");
+            return;
         case ND_NUM:
             printf("\tpush %d\n", node->val);
             return;

@@ -22,12 +22,19 @@ bool startswith(char *p, char *q) {
     return (memcmp(p, q, strlen(q)) == 0);
 }
 
+
+bool is_alnum(char c) {
+    return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '1'));
+}
+
+
 Token *tokenize(char *p) {
     Token head;
     head.next = NULL;
     Token *cur = &head;
 
     while (*p) {
+        // printf("s = %s\n", p);
         if (isspace(*p)) {
             p++;
             continue;
@@ -45,14 +52,21 @@ Token *tokenize(char *p) {
             continue;
         }
 
+        if (startswith(p, "return") && !is_alnum(p[6])) {
+            // printf("return\n");
+            cur = new_token(TK_RETURN, cur, p, 6);
+            p += 6;
+            continue;
+        }
+
         if (isalpha(*p) || *p == '_') {
             int len = 1;
             while(isalpha(p[len]) || *p == '_') {
                 len++;
             }
-#ifdef DEBUG
-            printf("in tokenize(): lval_len = %d\n", len);
-#endif
+// #ifdef DEBUG
+//             printf("in tokenize(): lval_len = %d\n", len);
+// #endif
             cur = new_token(TK_IDENT, cur, p, len);
             p += len;
             continue;
@@ -67,6 +81,6 @@ Token *tokenize(char *p) {
         error_at(p, "Cannot tokenize");
     }
 
-    new_token(TK_EOF, cur, p, 0);
+    cur = new_token(TK_EOF, cur, p, 0);
     return head.next;
 }
