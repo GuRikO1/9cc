@@ -5,6 +5,8 @@
 #include<stdlib.h>
 #include<string.h>
 
+#define DEBUG
+
 typedef enum {
     TK_RESERVED,
     TK_IDENT,
@@ -52,8 +54,9 @@ struct Node {
 
 char *user_input;
 Token *token;
+Node *code[100];
 void error_at(char *loc, char *fmt, ...);
+void error(char *fmt, ...);
 Token *tokenize(char *p);
-Node *program();
-Node *expr();
+void *program();
 void gen(Node *node);

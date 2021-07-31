@@ -11,15 +11,23 @@ int main(int argc, char **argv) {
 
     token = tokenize(user_input);
 
-    Node *node = program();
+    program();
 
     printf(".intel_syntax noprefix\n");
     printf(".global main\n");
     printf("main:\n");
 
-    gen(node);
+#ifdef DEBUG
+    printf("%d\n", code[0]->kind==ND_NUM);
+#endif
 
-    printf("\tpop rax\n");
+    for (int i = 0; code[i]; i++) {
+        gen(code[i]);
+        printf("\tpop rax\n");
+    }
+
+    printf("\tmov rsp, rbp\n");
+    printf("\tpop rbp");
     printf("\tret\n");
     return 0;
 }

@@ -31,9 +31,12 @@ int expect_number() {
 }
 
 
-Token *consume_indent() {
-    Token *tok = calloc(1, sizeof(Token));
-    return tok;
+bool consume_indent() {
+    if (token->kind != TK_IDENT) {
+        return false;
+    }
+    token = token->next;
+    return true;
 }
 
 
@@ -58,6 +61,9 @@ Node *new_node_num(int val) {
 }
 
 
+Node *expr();
+
+
 Node *primary() {
     if (consume("(")) {
         Node *node = expr();
@@ -65,11 +71,10 @@ Node *primary() {
         return node;
     }
 
-    Token *tok = consume_indent();
-    if (tok) {
+    if (consume_indent()) {
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_LVAR;
-        node->offset = (tok->str[0] - 'a' + 1) * 8;
+        node->offset = (token->str[0] - 'a' + 1) * 8;
         return node;
     }
 
@@ -168,15 +173,21 @@ Node *expr() {
 Node *stmt() {
     Node *node = expr();
     expect(";");
+#ifdef DEBUG
+    printf("in stmt(): %d\n", node->kind == ND_NUM);
+#endif
     return node;
 }
 
 
-Node *program() {
-    Node *code[100];
+void *program() {
     int i = 0;
     while (!at_eof()) {
         code[++i] = stmt();
+#ifdef DEBUG
+        printf("in program(): i=%d\n", i);
+        printf("in program(): %d\n", code[0]->kind == ND_NUM);
+#endif
     }
     code[++i] = NULL;
 }
