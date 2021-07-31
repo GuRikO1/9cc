@@ -11,7 +11,15 @@ int main(int argc, char **argv) {
 
     token = tokenize(user_input);
 
+#ifdef DEBUG
+    printf("Finish Tokenize\n");
+#endif
+
     program();
+
+#ifdef DEBUG
+    printf("Finish Program\n");
+#endif
 
     printf(".intel_syntax noprefix\n");
     printf(".global main\n");

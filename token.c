@@ -1,10 +1,17 @@
 #include "9cc.h"
 
 
-Token *new_token(TokenKind kind, Token *cur, char *str, int len) {
+Token *new_token(TokenKind kind, Token *cur, const char *str, int len) {
     Token *tok = calloc(1, sizeof(Token));
     tok->kind = kind;
-    tok->str = str;
+    char *name = calloc(len + 1, sizeof(char));
+    strncpy(name, str, 3);
+    name[len] = '\0';
+    tok->str = name;
+// #ifdef DEBUG
+//     printf("in new_token(): tok->str=%s\n", tok->str);
+//     printf("in new_token(): str=%s\n", str);
+// #endif
     tok->len = len;
     cur->next = tok;
     return tok;
@@ -38,8 +45,16 @@ Token *tokenize(char *p) {
             continue;
         }
 
-        if (*p >= 'a' && *p <= 'z') {
-            cur = new_token(TK_IDENT, cur, p++, 1);
+        if (isalpha(*p) || *p == '_') {
+            int len = 1;
+            while(isalpha(p[len]) || *p == '_') {
+                len++;
+            }
+#ifdef DEBUG
+            printf("in tokenize(): lval_len = %d\n", len);
+#endif
+            cur = new_token(TK_IDENT, cur, p, len);
+            p += len;
             continue;
         }
 
