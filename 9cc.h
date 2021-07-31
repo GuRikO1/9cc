@@ -52,9 +52,20 @@ struct Node {
 };
 
 
+typedef struct LVar LVar;
+
+struct LVar {
+    LVar *next;
+    char *name;
+    int len;
+    int offset;
+};
+
+
 char *user_input;
 Token *token;
 Node *code[100];
+LVar *locals;
 void error_at(char *loc, char *fmt, ...);
 void error(char *fmt, ...);
 Token *tokenize(char *p);

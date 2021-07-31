@@ -19,6 +19,7 @@ assert() {
 
 assert 0 '0;'
 assert 42 '42;'
+assert 100 '100;'
 assert 21 '5+20-4;'
 assert 41 ' 12 + 34 - 5 ;'
 
@@ -47,6 +48,9 @@ assert 0 '1>2;'
 assert 1 '1>=0;'
 assert 1 '1>=1;'
 assert 0 '1>=2;'
+assert 10 'x=10; x;'
 assert 3 'a=1; b=2; a+b;'
 assert 12 'a = 2; b = 5 * 6 - 8; (a + b) / 2;'
+assert 10 'val=10; val;'
+assert 7 'ans = 15; tmp = 12 / 3; ans - tmp * 2;'
 echo OK
