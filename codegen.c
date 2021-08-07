@@ -37,6 +37,12 @@ void gen(Node *node) {
             printf("\tmov [rax], rdi\n");
             printf("\tpush rdi\n");
             return;
+        case ND_IF:
+            printf("\tpop rax\n");
+            printf("\tcmp rax, 0\n");
+            printf("\tje  .Lend%d\n", serial_num);
+            gen(node->lhs);
+            printf(".Lend%d:\n", serial_num);
     }
 
     gen(node->lhs);

@@ -197,14 +197,20 @@ Node *expr() {
 Node *stmt() {
     Node *node;
     if (consume_kind(TK_RETURN))  {
+        node = new_node(ND_RETURN, expr(), NULL);
+        expect(";");
+    } else if (consume_kind(TK_IF)) {
         node = calloc(1, sizeof(Node));
-        node->kind = ND_RETURN;
+        node->kind = ND_IF;
+        expect("(");
         node->lhs = expr();
+        expect(")");
+        node->rhs = stmt();
     } else {
         node = expr();
+        expect(";");
     }
 
-    expect(";");
 #ifdef DEBUG
     printf("in stmt(): %d\n", node->kind == ND_NUM);
 #endif

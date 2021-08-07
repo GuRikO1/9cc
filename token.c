@@ -59,6 +59,13 @@ Token *tokenize(char *p) {
             continue;
         }
 
+        if (startswith(p, "if") && !is_alnum(p[2])) {
+            // printf("return\n");
+            cur = new_token(TK_IF, cur, p, 2);
+            p += 2;
+            continue;
+        }
+
         if (isalpha(*p) || *p == '_') {
             int len = 1;
             while(isalpha(p[len]) || *p == '_') {

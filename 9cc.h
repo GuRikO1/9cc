@@ -13,6 +13,7 @@ typedef enum {
     TK_NUM,
     TK_RETURN,
     TK_EOF,
+    TK_IF,
 } TokenKind;
 
 
@@ -39,6 +40,7 @@ typedef enum {
     ND_LT, // <=
     ND_LVAR, // local variable
     ND_NUM,
+    ND_IF,
     ND_RETURN,
 } NodeKind;
 
@@ -67,6 +69,7 @@ struct LVar {
 char *user_input;
 Token *token;
 Node *code[100];
+int serial_num;
 LVar *locals;
 void error_at(char *loc, char *fmt, ...);
 void error(char *fmt, ...);
