@@ -27,8 +27,19 @@ bool is_alnum(char c) {
     return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '1'));
 }
 
+static Map *keyword_map() {
+  Map *map = new_map();
+  map_put(map, "return", TK_RETURN);
+  map_put(map, "if", TK_IF);
+  map_put(map, "else", TK_ELSE);
+  map_put(map, "while", TK_WHILE);
+  map_put(map, "for", TK_FOR);
+  return map;
+}
 
 Token *tokenize(char *p) {
+    Map *keywords = keyword_map();
+
     Token head;
     head.next = NULL;
     Token *cur = &head;
@@ -52,44 +63,25 @@ Token *tokenize(char *p) {
             continue;
         }
 
-        if (startswith(p, "return") && !is_alnum(p[6])) {
-            cur = new_token(TK_RETURN, cur, p, 6);
-            p += 6;
-            continue;
+        bool ident = false;
+        for (int i = 0; i < keywords->keys->len; i++) {
+            char *key = keywords->keys->data[i];
+            int key_len = strlen(key);
+            TokenKind val = (intptr_t)keywords->vals->data[i];
+            if (startswith(p, key) && !is_alnum(p[key_len])) {
+                cur = new_token(val, cur, p, key_len);
+                p += key_len;
+                ident = true;
+                break;
+            }
         }
-
-        if (startswith(p, "if") && !is_alnum(p[2])) {
-            cur = new_token(TK_IF, cur, p, 2);
-            p += 2;
-            continue;
-        }
-
-        if (startswith(p, "else") && !is_alnum(p[4])) {
-            cur = new_token(TK_ELSE, cur, p, 4);
-            p += 4;
-            continue;
-        }
-
-        if (startswith(p, "while") && !is_alnum(p[5])) {
-            cur = new_token(TK_WHILE, cur, p, 5);
-            p += 5;
-            continue;
-        }
-
-        if (startswith(p, "for") && !is_alnum(p[3])) {
-            cur = new_token(TK_FOR, cur, p, 3);
-            p += 3;
-            continue;
-        }
+        if (ident) continue;
 
         if (isalpha(*p) || *p == '_') {
             int len = 1;
             while(isalpha(p[len]) || *p == '_') {
                 len++;
             }
-// #ifdef DEBUG
-//             printf("in tokenize(): lval_len = %d\n", len);
-// #endif
             cur = new_token(TK_IDENT, cur, p, len);
             p += len;
             continue;

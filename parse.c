@@ -204,19 +204,19 @@ Node *stmt() {
         node = calloc(1, sizeof(Node));
         node->kind = ND_IF;
         expect("(");
-        node->lhs = expr();
+        node->cond = expr();
         expect(")");
-        node->rhs = stmt();
+        node->lhs = stmt();
         if (consume_kind(TK_ELSE)) {
-            node->els = stmt();
+            node->rhs = stmt();
         }
     } else if (consume_kind(TK_WHILE)) {
         node = calloc(1, sizeof(Node));
         node->kind = ND_WHILE;
         expect("(");
-        node->lhs = expr();
+        node->cond = expr();
         expect(")");
-        node->rhs = stmt();
+        node->lhs = stmt();
     } else if (consume_kind(TK_FOR)) {
         node = calloc(1, sizeof(Node));
         node->kind = ND_FOR;

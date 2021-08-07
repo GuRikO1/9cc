@@ -4,6 +4,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<stdint.h>
 
 // #define DEBUG
 
@@ -60,7 +61,6 @@ struct Node {
     int offset;
     Node *init;
     Node *cond;
-    Node *els;
     Node *routine;
 };
 
@@ -74,15 +74,31 @@ struct LVar {
     int offset;
 };
 
+typedef struct {
+  void **data;
+  int capacity;
+  int len;
+} Vector;
+
+typedef struct {
+  Vector *keys;
+  Vector *vals;
+} Map;
 
 char *user_input;
 Token *token;
 Node *code[100];
 int serial_num;
 LVar *locals;
+
 void error_at(char *loc, char *fmt, ...);
 void error(char *fmt, ...);
+Map *new_map();
+void map_put(Map *map, char *key, int val);
+
 Token *tokenize(char *p);
+
 Node *stmt();
 void *program();
+
 void gen(Node *node);

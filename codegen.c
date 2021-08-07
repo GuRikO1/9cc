@@ -20,15 +20,18 @@ void gen(Node *node) {
             printf("\tpop rbp\n");
             printf("\tret\n");
             return;
+
         case ND_NUM:
             printf("\tpush %d\n", node->val);
             return;
+
         case ND_LVAR:
             gen_lval(node);
             printf("\tpop rax\n");
             printf("\tmov rax, [rax]\n");
             printf("\tpush rax\n");
             return;
+
         case ND_ASSIGN:
             gen_lval(node->lhs);
             gen(node->rhs);
@@ -37,23 +40,23 @@ void gen(Node *node) {
             printf("\tmov [rax], rdi\n");
             printf("\tpush rdi\n");
             return;
+
         case ND_IF:
-            gen(node->lhs);
+            gen(node->cond);
             printf("\tpop rax\n");
             printf("\tcmp rax, 0\n");
-            if (node->els != NULL) {
-                printf("\tje  .Lelse%d\n", serial_num);
-                gen(node->rhs);
-                printf("\tjmp .Lend%d\n", serial_num);
-            } else {
+
+            if (node->rhs == NULL) {
                 printf("\tje .Lend%d\n", serial_num);
+                gen(node->lhs);
+            } else {
+                printf("\tje  .Lelse%d\n", serial_num);
+                gen(node->lhs);
+                printf("\tjmp .Lend%d\n", serial_num);
+                printf(".Lelse%d:\n", serial_num);
                 gen(node->rhs);
             }
 
-            if (node->els != NULL) {
-                printf(".Lelse%d:\n", serial_num);
-                gen(node->els);
-            }
             printf(".Lend%d:\n", serial_num);
 
             ++serial_num;
@@ -61,11 +64,11 @@ void gen(Node *node) {
 
         case ND_WHILE:
             printf(".Lbegin%d:\n", serial_num);
-            gen(node->lhs);
+            gen(node->cond);
             printf("\tpop rax\n");
             printf("\tcmp rax, 0\n");
             printf("\tje .Lend%d\n", serial_num);
-            gen(node->rhs);
+            gen(node->lhs);
             printf("jmp .Lbegin%d\n", serial_num);
             printf(".Lend%d:\n", serial_num);
 
