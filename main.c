@@ -42,8 +42,8 @@ int main(int argc, char **argv) {
         printf("\tpop rax\n");
     }
 
-    printf("\tmov rsp, rbp\n");
-    printf("\tpop rbp\n");
-    printf("\tret\n");
+    // printf("\tmov rsp, rbp\n");
+    // printf("\tpop rbp\n");
+    // printf("\tret\n");
     return 0;
 }

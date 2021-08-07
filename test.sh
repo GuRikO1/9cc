@@ -56,4 +56,8 @@ assert 7 'ans = 15; tmp = 12 / 3; return ans - tmp * 2;'
 assert 15 'return 15; tmp = 12 / 3;'
 assert 8 'return 8; return 10;'
 assert 3 'if (5 == 5) return 3; return 4;'
+assert 1 'if (3 < 1) return 3; return 1;'
+assert 4 'if (5 != 5) return 3; return 4;'
+assert 10 'if (5 < 5) return 3; else return 10; return 5;'
+assert 1 'a = 0; if (5 == 5) a = 1; else a = 2; return a;'
 echo OK

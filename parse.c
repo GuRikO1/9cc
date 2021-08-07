@@ -13,7 +13,9 @@ bool consume(char *op) {
 
 
 void expect(char *op) {
-    if (token->kind != TK_RESERVED ||
+    if (token == NULL) {
+        error("Cannot access NULL");
+    } else if (token->kind != TK_RESERVED ||
         strlen(op) != token->len ||
         memcmp(token->str, op, token->len)) {
         error_at(token->str, "Not '%c'", op);
@@ -70,7 +72,6 @@ Node *new_node_num(int val) {
     node->val = val;
     return node;
 }
-
 
 Node *expr();
 
@@ -206,6 +207,9 @@ Node *stmt() {
         node->lhs = expr();
         expect(")");
         node->rhs = stmt();
+        if (consume_kind(TK_ELSE)) {
+            node->els = stmt();
+        }
     } else {
         node = expr();
         expect(";");

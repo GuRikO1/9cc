@@ -38,11 +38,26 @@ void gen(Node *node) {
             printf("\tpush rdi\n");
             return;
         case ND_IF:
+            gen(node->lhs);
             printf("\tpop rax\n");
             printf("\tcmp rax, 0\n");
-            printf("\tje  .Lend%d\n", serial_num);
-            gen(node->lhs);
+            if (node->els != NULL) {
+                printf("\tje  .Lelse%d\n", serial_num);
+                gen(node->rhs);
+                printf("\tjmp .Lend%d\n", serial_num);
+            } else {
+                printf("\tje .Lend%d\n", serial_num);
+                gen(node->rhs);
+            }
+
+            if (node->els != NULL) {
+                printf(".Lelse%d:\n", serial_num);
+                gen(node->els);
+            }
             printf(".Lend%d:\n", serial_num);
+
+            ++serial_num;
+            return;
     }
 
     gen(node->lhs);
