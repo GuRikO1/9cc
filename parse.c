@@ -217,6 +217,15 @@ Node *stmt() {
         node->lhs = expr();
         expect(")");
         node->rhs = stmt();
+    } else if (consume_kind(TK_FOR)) {
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_FOR;
+        expect("(");
+        node->init = stmt();
+        node->cond = stmt();
+        node->routine = expr();
+        expect(")");
+        node->lhs = stmt();
     } else {
         node = expr();
         expect(";");
