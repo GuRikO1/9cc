@@ -58,6 +58,19 @@ void gen(Node *node) {
 
             ++serial_num;
             return;
+
+        case ND_WHILE:
+            printf(".Lbegin%d:\n", serial_num);
+            gen(node->lhs);
+            printf("\tpop rax\n");
+            printf("\tcmp rax, 0\n");
+            printf("\tje .Lend%d\n", serial_num);
+            gen(node->rhs);
+            printf("jmp .Lbegin%d\n", serial_num);
+            printf(".Lend%d:\n", serial_num);
+
+            ++serial_num;
+            return;
     }
 
     gen(node->lhs);

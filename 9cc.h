@@ -15,6 +15,7 @@ typedef enum {
     TK_EOF,
     TK_IF,
     TK_ELSE,
+    TK_WHILE,
 } TokenKind;
 
 
@@ -42,6 +43,7 @@ typedef enum {
     ND_LVAR, // local variable
     ND_NUM,
     ND_IF,
+    ND_WHILE,
     ND_RETURN,
 } NodeKind;
 

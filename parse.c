@@ -210,6 +210,13 @@ Node *stmt() {
         if (consume_kind(TK_ELSE)) {
             node->els = stmt();
         }
+    } else if (consume_kind(TK_WHILE)) {
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_WHILE;
+        expect("(");
+        node->lhs = expr();
+        expect(")");
+        node->rhs = stmt();
     } else {
         node = expr();
         expect(";");

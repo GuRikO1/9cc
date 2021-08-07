@@ -60,4 +60,5 @@ assert 1 'if (3 < 1) return 3; return 1;'
 assert 4 'if (5 != 5) return 3; return 4;'
 assert 10 'if (5 < 5) return 3; else return 10; return 5;'
 assert 1 'a = 0; if (5 == 5) a = 1; else a = 2; return a;'
+assert 10 'a = 0; while (a < 10) a = a + 1; return a;'
 echo OK
