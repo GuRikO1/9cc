@@ -36,13 +36,14 @@ int main(int argc, char **argv) {
     printf("%d\n", code[0]->kind==ND_NUM);
 #endif
 
+    serial_num = 0;
     for (int i = 0; code[i]; i++) {
         gen(code[i]);
         printf("\tpop rax\n");
     }
 
-    printf("\tmov rsp, rbp\n");
-    printf("\tpop rbp\n");
-    printf("\tret\n");
+    // printf("\tmov rsp, rbp\n");
+    // printf("\tpop rbp\n");
+    // printf("\tret\n");
     return 0;
 }

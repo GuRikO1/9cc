@@ -20,15 +20,18 @@ void gen(Node *node) {
             printf("\tpop rbp\n");
             printf("\tret\n");
             return;
+
         case ND_NUM:
             printf("\tpush %d\n", node->val);
             return;
+
         case ND_LVAR:
             gen_lval(node);
             printf("\tpop rax\n");
             printf("\tmov rax, [rax]\n");
             printf("\tpush rax\n");
             return;
+
         case ND_ASSIGN:
             gen_lval(node->lhs);
             gen(node->rhs);
@@ -36,6 +39,55 @@ void gen(Node *node) {
             printf("\tpop rax\n");
             printf("\tmov [rax], rdi\n");
             printf("\tpush rdi\n");
+            return;
+
+        case ND_IF:
+            gen(node->cond);
+            printf("\tpop rax\n");
+            printf("\tcmp rax, 0\n");
+
+            if (node->rhs == NULL) {
+                printf("\tje .Lend%d\n", serial_num);
+                gen(node->lhs);
+            } else {
+                printf("\tje  .Lelse%d\n", serial_num);
+                gen(node->lhs);
+                printf("\tjmp .Lend%d\n", serial_num);
+                printf(".Lelse%d:\n", serial_num);
+                gen(node->rhs);
+            }
+
+            printf(".Lend%d:\n", serial_num);
+
+            ++serial_num;
+            return;
+
+        case ND_WHILE:
+            printf(".Lbegin%d:\n", serial_num);
+            gen(node->cond);
+            printf("\tpop rax\n");
+            printf("\tcmp rax, 0\n");
+            printf("\tje .Lend%d\n", serial_num);
+            gen(node->lhs);
+            printf("jmp .Lbegin%d\n", serial_num);
+            printf(".Lend%d:\n", serial_num);
+
+            ++serial_num;
+            return;
+
+        case ND_FOR:
+            gen(node->init);
+            printf(".Lbegin%d:\n", serial_num);
+            gen(node->cond);
+            printf("\tpop rax\n");
+            printf("\tcmp rax, 0\n");
+            printf("\tje .Lend%d\n", serial_num);
+            gen(node->lhs);
+            gen(node->routine);
+            printf("jmp .Lbegin%d\n", serial_num);
+            printf(".Lend%d:\n", serial_num);
+
+            ++serial_num;
             return;
     }
 

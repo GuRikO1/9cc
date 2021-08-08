@@ -4,6 +4,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<stdint.h>
 
 // #define DEBUG
 
@@ -13,6 +14,10 @@ typedef enum {
     TK_NUM,
     TK_RETURN,
     TK_EOF,
+    TK_IF,
+    TK_ELSE,
+    TK_WHILE,
+    TK_FOR,
 } TokenKind;
 
 
@@ -39,6 +44,9 @@ typedef enum {
     ND_LT, // <=
     ND_LVAR, // local variable
     ND_NUM,
+    ND_IF,
+    ND_WHILE,
+    ND_FOR,
     ND_RETURN,
 } NodeKind;
 
@@ -51,6 +59,9 @@ struct Node {
     Node *rhs;
     int val;
     int offset;
+    Node *init;
+    Node *cond;
+    Node *routine;
 };
 
 
@@ -63,14 +74,31 @@ struct LVar {
     int offset;
 };
 
+typedef struct {
+  void **data;
+  int capacity;
+  int len;
+} Vector;
+
+typedef struct {
+  Vector *keys;
+  Vector *vals;
+} Map;
 
 char *user_input;
 Token *token;
 Node *code[100];
+int serial_num;
 LVar *locals;
+
 void error_at(char *loc, char *fmt, ...);
 void error(char *fmt, ...);
+Map *new_map();
+void map_put(Map *map, char *key, int val);
+
 Token *tokenize(char *p);
+
 Node *stmt();
 void *program();
+
 void gen(Node *node);

@@ -13,7 +13,9 @@ bool consume(char *op) {
 
 
 void expect(char *op) {
-    if (token->kind != TK_RESERVED ||
+    if (token == NULL) {
+        error("Cannot access NULL");
+    } else if (token->kind != TK_RESERVED ||
         strlen(op) != token->len ||
         memcmp(token->str, op, token->len)) {
         error_at(token->str, "Not '%c'", op);
@@ -70,7 +72,6 @@ Node *new_node_num(int val) {
     node->val = val;
     return node;
 }
-
 
 Node *expr();
 
@@ -197,14 +198,39 @@ Node *expr() {
 Node *stmt() {
     Node *node;
     if (consume_kind(TK_RETURN))  {
+        node = new_node(ND_RETURN, expr(), NULL);
+        expect(";");
+    } else if (consume_kind(TK_IF)) {
         node = calloc(1, sizeof(Node));
-        node->kind = ND_RETURN;
-        node->lhs = expr();
+        node->kind = ND_IF;
+        expect("(");
+        node->cond = expr();
+        expect(")");
+        node->lhs = stmt();
+        if (consume_kind(TK_ELSE)) {
+            node->rhs = stmt();
+        }
+    } else if (consume_kind(TK_WHILE)) {
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_WHILE;
+        expect("(");
+        node->cond = expr();
+        expect(")");
+        node->lhs = stmt();
+    } else if (consume_kind(TK_FOR)) {
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_FOR;
+        expect("(");
+        node->init = stmt();
+        node->cond = stmt();
+        node->routine = expr();
+        expect(")");
+        node->lhs = stmt();
     } else {
         node = expr();
+        expect(";");
     }
 
-    expect(";");
 #ifdef DEBUG
     printf("in stmt(): %d\n", node->kind == ND_NUM);
 #endif

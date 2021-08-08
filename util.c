@@ -22,3 +22,51 @@ void error_at(char *loc, char *fmt, ...) {
     fprintf(stderr, "\n");
     exit(1);
 }
+
+
+Vector *new_vec() {
+  Vector *v = malloc(sizeof(Vector));
+  v->data = malloc(sizeof(void *) * 16);
+  v->capacity = 16;
+  v->len = 0;
+  return v;
+}
+
+
+Map *new_map(void) {
+    Map *map = malloc(sizeof(Map));
+    map->keys = new_vec();
+    map->vals = new_vec();
+    return map;
+}
+
+
+void _vec_push(Vector *v, void *elem) {
+    if (v->len == v->capacity) {
+        v->capacity *= 2;
+        v->data = realloc(v->data, sizeof(void *) * v->capacity);
+    }
+    v->data[v->len++] = elem;
+}
+
+
+void vec_push(Vector *v, int val) {
+    _vec_push(v, (void *)(intptr_t)val);
+}
+
+
+void _map_put(Map *map, char *key, void *val) {
+    _vec_push(map->keys, key);
+    _vec_push(map->vals, val);
+}
+
+void map_put(Map *map, char *key, int val) {
+    _map_put(map, key, (void *)(intptr_t)val);
+}
+
+int map_get(Map *map, char *key, int default_) {
+  for (int i = map->keys->len - 1; i >= 0; i--)
+    if (!strcmp(map->keys->data[i], key))
+      return (intptr_t)map->vals->data[i];
+  return default_;
+}
