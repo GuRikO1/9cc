@@ -1,5 +1,5 @@
 # Complier for C
-* Thank you! https://www.sigbus.info/compilerbook
+* Thank you! [study-aid site](https://www.sigbus.info/compilerbook)
 
 ## Docker Set up
 ```
@@ -18,5 +18,5 @@ docker exec -it <continer-id> /bin/sh
 
 ## Circle CI Test in local
 ```
-circleci local execute
+circleci local execute --job test
 ```

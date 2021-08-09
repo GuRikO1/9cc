@@ -9,6 +9,10 @@ int main(int argc, char **argv) {
 
     user_input = argv[1];
 
+#ifdef DEBUG
+    printf("Start 9cc\n");
+#endif
+
     token = tokenize(user_input);
 
 #ifdef DEBUG
