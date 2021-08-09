@@ -8,6 +8,17 @@
 
 // #define DEBUG
 
+typedef struct {
+  void **data;
+  int capacity;
+  int len;
+} Vector;
+
+typedef struct {
+  Vector *keys;
+  Vector *vals;
+} Map;
+
 typedef enum {
     TK_RESERVED,
     TK_IDENT,
@@ -47,6 +58,7 @@ typedef enum {
     ND_IF,
     ND_WHILE,
     ND_FOR,
+    ND_BLOCK,
     ND_RETURN,
 } NodeKind;
 
@@ -62,6 +74,8 @@ struct Node {
     Node *init;
     Node *cond;
     Node *routine;
+    Vector *stmts;
+    Vector *elsstmts;
 };
 
 
@@ -74,16 +88,7 @@ struct LVar {
     int offset;
 };
 
-typedef struct {
-  void **data;
-  int capacity;
-  int len;
-} Vector;
 
-typedef struct {
-  Vector *keys;
-  Vector *vals;
-} Map;
 
 char *user_input;
 Token *token;
@@ -93,6 +98,11 @@ LVar *locals;
 
 void error_at(char *loc, char *fmt, ...);
 void error(char *fmt, ...);
+
+Vector *new_vec();
+void vec_push(Vector *v, void *elem);
+void vec_push_val(Vector *v, int val);
+
 Map *new_map();
 void map_put(Map *map, char *key, int val);
 

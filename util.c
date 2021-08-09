@@ -41,7 +41,7 @@ Map *new_map(void) {
 }
 
 
-void _vec_push(Vector *v, void *elem) {
+void vec_push(Vector *v, void *elem) {
     if (v->len == v->capacity) {
         v->capacity *= 2;
         v->data = realloc(v->data, sizeof(void *) * v->capacity);
@@ -50,14 +50,14 @@ void _vec_push(Vector *v, void *elem) {
 }
 
 
-void vec_push(Vector *v, int val) {
-    _vec_push(v, (void *)(intptr_t)val);
+void vec_push_val(Vector *v, int val) {
+    vec_push(v, (void *)(intptr_t)val);
 }
 
 
 void _map_put(Map *map, char *key, void *val) {
-    _vec_push(map->keys, key);
-    _vec_push(map->vals, val);
+    vec_push(map->keys, key);
+    vec_push(map->vals, val);
 }
 
 void map_put(Map *map, char *key, int val) {

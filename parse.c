@@ -73,6 +73,18 @@ Node *new_node_num(int val) {
     return node;
 }
 
+Vector *new_stmt_vec() {
+    Vector *stmts = new_vec();
+    if (consume("{")) {
+        while (!consume("}")) {
+            vec_push(stmts, stmt());
+        }
+    } else {
+        vec_push(stmts, stmt());
+    }
+    return stmts;
+}
+
 Node *expr();
 
 
@@ -206,9 +218,9 @@ Node *stmt() {
         expect("(");
         node->cond = expr();
         expect(")");
-        node->lhs = stmt();
+        node->stmts = new_stmt_vec();
         if (consume_kind(TK_ELSE)) {
-            node->rhs = stmt();
+            node->elsstmts = new_stmt_vec();
         }
     } else if (consume_kind(TK_WHILE)) {
         node = calloc(1, sizeof(Node));
@@ -216,7 +228,7 @@ Node *stmt() {
         expect("(");
         node->cond = expr();
         expect(")");
-        node->lhs = stmt();
+        node->stmts = new_stmt_vec();
     } else if (consume_kind(TK_FOR)) {
         node = calloc(1, sizeof(Node));
         node->kind = ND_FOR;
@@ -225,15 +237,13 @@ Node *stmt() {
         node->cond = stmt();
         node->routine = expr();
         expect(")");
-        node->lhs = stmt();
+        node->stmts = new_stmt_vec();
     } else {
         node = expr();
         expect(";");
     }
 
-#ifdef DEBUG
-    printf("in stmt(): %d\n", node->kind == ND_NUM);
-#endif
+
     return node;
 }
 

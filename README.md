@@ -18,5 +18,5 @@ docker exec -it <continer-id> /bin/sh
 
 ## Circle CI Test in local
 ```
-circleci local execute
+circleci local execute --job test
 ```

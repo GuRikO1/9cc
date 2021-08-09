@@ -46,15 +46,21 @@ void gen(Node *node) {
             printf("\tpop rax\n");
             printf("\tcmp rax, 0\n");
 
-            if (node->rhs == NULL) {
+            if (node->elsstmts == NULL) {
                 printf("\tje .Lend%d\n", serial_num);
-                gen(node->lhs);
+                for (int i = 0; i < node->stmts->len; i++) {
+                    gen(node->stmts->data[i]);
+                }
             } else {
                 printf("\tje  .Lelse%d\n", serial_num);
-                gen(node->lhs);
+                for (int i = 0; i < node->stmts->len; i++) {
+                    gen(node->stmts->data[i]);
+                }
                 printf("\tjmp .Lend%d\n", serial_num);
                 printf(".Lelse%d:\n", serial_num);
-                gen(node->rhs);
+                for (int i = 0; i < node->elsstmts->len; i++) {
+                    gen(node->elsstmts->data[i]);
+                }
             }
 
             printf(".Lend%d:\n", serial_num);
@@ -68,7 +74,9 @@ void gen(Node *node) {
             printf("\tpop rax\n");
             printf("\tcmp rax, 0\n");
             printf("\tje .Lend%d\n", serial_num);
-            gen(node->lhs);
+            for (int i = 0; i < node->stmts->len; i++) {
+                gen(node->stmts->data[i]);
+            }
             printf("jmp .Lbegin%d\n", serial_num);
             printf(".Lend%d:\n", serial_num);
 
@@ -82,13 +90,24 @@ void gen(Node *node) {
             printf("\tpop rax\n");
             printf("\tcmp rax, 0\n");
             printf("\tje .Lend%d\n", serial_num);
-            gen(node->lhs);
+            // printf("len = %d\n", node->stmts->len);
+            // gen(node->lhs);
+            for (int i = 0; i < node->stmts->len; i++) {
+                gen(node->stmts->data[i]);
+            }
             gen(node->routine);
             printf("jmp .Lbegin%d\n", serial_num);
             printf(".Lend%d:\n", serial_num);
 
             ++serial_num;
             return;
+
+        // case ND_BLOCK:
+        //     for (int i = 0; i < node->stmts->len; i++) {
+        //         Node *node = node->stmts->data[i];
+        //         gen(node);
+        //     }
+        //     return;
     }
 
     gen(node->lhs);
