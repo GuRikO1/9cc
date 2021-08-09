@@ -1,5 +1,5 @@
 # Complier for C
-* Thank you! https://www.sigbus.info/compilerbook
+* Thank you! [study-aid site](https://www.sigbus.info/compilerbook)
 
 ## Docker Set up
 ```
