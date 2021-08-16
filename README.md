@@ -8,12 +8,12 @@ docker build . -t "9cc"
 
 ## Allocate Volume and Enter Continer for the First Time
 ```
-docker run -it --name "9cc" -v $(pwd):/9cc 9cc /bin/sh
+docker run -it --cap-add=SYS_PTRACE --security-opt="seccomp=unconfined" --name "9cc" -v $(pwd):/9cc:delegated 9cc /bin/bash
 ```
 
 ## Enter Container
 ```
-docker exec -it <continer-id> /bin/sh
+docker exec -it <continer-id> /bin/bash
 ```
 
 ## Circle CI Test in local

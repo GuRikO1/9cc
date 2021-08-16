@@ -1,6 +1,8 @@
 #include "9cc.h"
 
 
+static char *argregs[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+
 void gen_lval(Node *node) {
     if (node->kind != ND_LVAR) {
         error("Left side value of assignment is not a variable");
@@ -29,6 +31,16 @@ void gen(Node *node) {
             gen_lval(node);
             printf("\tpop rax\n");
             printf("\tmov rax, [rax]\n");
+            printf("\tpush rax\n");
+            return;
+
+        case ND_CALL:
+            for (int i = 0; i < node->args->len; i++) {
+                gen(node->args->data[i]);
+                printf("\tpop rax\n");
+                printf("\tmov %s, rax\n", argregs[i]);
+            }
+            printf("\tcall %s\n", node->name);
             printf("\tpush rax\n");
             return;
 
@@ -101,13 +113,6 @@ void gen(Node *node) {
 
             ++serial_num;
             return;
-
-        // case ND_BLOCK:
-        //     for (int i = 0; i < node->stmts->len; i++) {
-        //         Node *node = node->stmts->data[i];
-        //         gen(node);
-        //     }
-        //     return;
     }
 
     gen(node->lhs);
