@@ -59,6 +59,7 @@ typedef enum {
     ND_WHILE,
     ND_FOR,
     ND_BLOCK,
+    ND_CALL,
     ND_RETURN,
 } NodeKind;
 
@@ -67,6 +68,7 @@ typedef struct Node Node;
 
 struct Node {
     NodeKind kind;
+    char *name;
     Node *lhs;
     Node *rhs;
     int val;
@@ -87,7 +89,6 @@ struct LVar {
     int len;
     int offset;
 };
-
 
 
 char *user_input;

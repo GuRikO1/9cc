@@ -5,7 +5,8 @@ assert() {
     input="$2"
 
     ./9cc "$input" > tmp.s
-    cc -o tmp tmp.s
+    cc -S test/test.c
+    cc -o tmp tmp.s test.s
     ./tmp
     actual="$?"
 
@@ -66,4 +67,6 @@ assert 6 'a = 2; b = 3; if (9 > 8) {b = b + 1; a = a + b;} else a = a + 1; retur
 assert 12 'a = 10; b = 1; if (3 == 4) a = a + 1; else {b = b + 1; a = a + b;} return a;'
 assert 45 'i = 0; a = 0; while (i < 10) {a = a + i; i = i + 1;} return a;'
 assert 15 'a = 0; b = 0; for (i = 0; i < 5; i = i + 1) {b = b + 1; a = a + b;} return a;'
+assert 4 'return ret_4();'
+assert 9 'return ret_9();'
 echo OK

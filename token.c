@@ -5,7 +5,7 @@ Token *new_token(TokenKind kind, Token *cur, const char *str, int len) {
     Token *tok = calloc(1, sizeof(Token));
     tok->kind = kind;
     char *name = calloc(len + 1, sizeof(char));
-    strncpy(name, str, 3);
+    strncpy(name, str, len);
     name[len] = '\0';
     tok->str = name;
 // #ifdef DEBUG
@@ -79,7 +79,7 @@ Token *tokenize(char *p) {
 
         if (isalpha(*p) || *p == '_') {
             int len = 1;
-            while(isalpha(p[len]) || *p == '_') {
+            while(isalpha(p[len]) || isdigit(p[len]) || p[len] == '_') {
                 len++;
             }
             cur = new_token(TK_IDENT, cur, p, len);

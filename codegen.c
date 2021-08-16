@@ -32,6 +32,15 @@ void gen(Node *node) {
             printf("\tpush rax\n");
             return;
 
+        case ND_CALL:
+            // printf("\tpush rbp\n");
+            // printf("\tmov rbp, rsp\n");
+            printf("\tcall %s\n", node->name);
+            printf("\tpush rax\n");
+            // printf("\tpop rbp\n");
+            // printf("\tmov %d, rax\n", node->offset);
+            return;
+
         case ND_ASSIGN:
             gen_lval(node->lhs);
             gen(node->rhs);
@@ -101,13 +110,6 @@ void gen(Node *node) {
 
             ++serial_num;
             return;
-
-        // case ND_BLOCK:
-        //     for (int i = 0; i < node->stmts->len; i++) {
-        //         Node *node = node->stmts->data[i];
-        //         gen(node);
-        //     }
-        //     return;
     }
 
     gen(node->lhs);

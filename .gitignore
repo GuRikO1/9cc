@@ -1,6 +1,7 @@
 *~
 *.o
 *.out
+*.s
 tmp*
 9cc
 .vscode/*
