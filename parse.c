@@ -86,7 +86,7 @@ Vector *new_stmt_vec() {
 }
 
 Node *expr();
-
+Node *assign();
 
 Node *primary() {
     if (consume("(")) {
@@ -106,16 +106,21 @@ Node *primary() {
             if (consume("(")) {
                 node->kind = ND_CALL;
                 node->name = tok->str;
-                node->offset = locals->offset + 8;
-                consume(")");
-                // printf("node->offset = %d\n", node->offset);
+                node->args = new_vec();
+                int len=0;
+                while (!consume(")")) {
+                    vec_push(node->args, assign());
+                    consume(",");
+                    ++len;
+                }
+                printf("len = %d\n", len);
             } else {
                 node->kind = ND_LVAR;
                 ident = calloc(1, sizeof(LVar));
                 ident->next = locals;
                 ident->name = tok->str;
                 ident->len = tok->len;
-                ident->offset = locals->offset + 8;
+                ident->offset = locals->offset + 16;
                 node->offset = ident->offset;
                 locals = ident;
             }
