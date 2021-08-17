@@ -35,11 +35,14 @@ void gen(Node *node) {
             return;
 
         case ND_CALL:
-            for (int i = 0; i < node->args->len; i++) {
+            for (int i = node->args->len - 1; i >= 0; i--) {
                 gen(node->args->data[i]);
+            }
+            for (int i = 0; i < node->args->len; i++) {
                 printf("\tpop rax\n");
                 printf("\tmov %s, rax\n", argregs[i]);
             }
+
             printf("\tcall %s\n", node->name);
             printf("\tpush rax\n");
             return;
