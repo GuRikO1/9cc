@@ -71,5 +71,5 @@ assert 4 'return ret_4();'
 assert 9 'a = ret_9(); return a;'
 assert 13 'return ret_4() + ret_9();'
 assert 12 'return add_2(4, 8);'
-assert 21 'a = 5; ret = add_6(1, 2, 3, 4, a, 6); return ret;'
+assert 21 'a = 5; ret = add_6(1, 2, 3, ret_4(), a, add_2(1, 5)); return ret;'
 echo OK
