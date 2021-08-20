@@ -29,12 +29,6 @@ int main(int argc, char **argv) {
 
     printf(".intel_syntax noprefix\n");
     printf(".global main\n");
-    printf("main:\n");
-
-    printf("\tpush rbp\n");
-    printf("\tmov rbp, rsp\n");
-    printf("\tsub rsp, 208\n");
-
 
 #ifdef DEBUG
     printf("%d\n", code[0]->kind==ND_NUM);
@@ -46,8 +40,5 @@ int main(int argc, char **argv) {
         printf("\tpop rax\n");
     }
 
-    // printf("\tmov rsp, rbp\n");
-    // printf("\tpop rbp\n");
-    // printf("\tret\n");
     return 0;
 }

@@ -61,6 +61,7 @@ typedef enum {
     ND_BLOCK,
     ND_CALL,
     ND_RETURN,
+    ND_FUNC,
 } NodeKind;
 
 
