@@ -53,6 +53,8 @@ typedef enum {
     ND_NE, // !=
     ND_LE, // <
     ND_LT, // <=
+    ND_ADDR,
+    ND_DEREF,
     ND_LVAR, // local variable
     ND_NUM,
     ND_IF,

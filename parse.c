@@ -120,7 +120,7 @@ Node *primary() {
                 ident->next = locals;
                 ident->name = tok->str;
                 ident->len = tok->len;
-                ident->offset = locals->offset + 16;
+                ident->offset = locals->offset + 8;
                 node->offset = ident->offset;
                 locals = ident;
             }
@@ -137,6 +137,10 @@ Node *unary() {
         return primary();
     } else if (consume("-")) {
         return new_node(ND_SUB, new_node_num(0), unary());
+    } else if (consume("&")) {
+        return new_node(ND_ADDR, unary(), NULL);
+    } else if (consume("*")) {
+        return new_node(ND_DEREF, unary(), NULL);
     }
     return primary();
 }
