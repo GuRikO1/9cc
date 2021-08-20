@@ -27,6 +27,17 @@ void gen(Node *node) {
             printf("\tpush %d\n", node->val);
             return;
 
+        case ND_ADDR:
+            gen_lval(node->lhs);
+            return;
+
+        case ND_DEREF:
+            gen(node->lhs);
+            printf("\tpop rax\n");
+            printf("\tmov rax, [rax]\n");
+            printf("\tpush rax\n");
+            return;
+
         case ND_LVAR:
             gen_lval(node);
             printf("\tpop rax\n");

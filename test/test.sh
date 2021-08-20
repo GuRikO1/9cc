@@ -76,4 +76,6 @@ assert 21 'main() { a = 5; ret = add_6(1, 2, 3, ret_4(), a, add_2(1, 5)); return
 assert 11 'main() { return sub(19, 11) + 3; }'
 assert 17 'mul(a, b) { return a * b; } main() { return mul(2, 6) + 5; }'
 assert 15 'fib(n) { if (n <= 1) return n; else return fib(n-1) + n;} main() { return fib(5); }'
+assert 3 'main() { x = sub(9, 6); y = &x; return *y; }'
+assert 3 'main() { x = 3; y = add_2(3, 4); z = &y + 8; return *z; }'
 echo OK
