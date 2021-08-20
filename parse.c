@@ -261,12 +261,27 @@ Node *stmt() {
 }
 
 
+Node *top_level() {
+    Token *tok = consume_kind(TK_IDENT);
+    expect("(");
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = ND_FUNC;
+    node->name = tok->str;
+    node->args = new_vec();
+    while (!consume(")")) {
+        vec_push(node->args, primary());
+        consume(",");
+    }
+    node->stmts = new_stmt_vec();
+    return node;
+}
+
 void *program() {
     locals = calloc(1, sizeof(LVar));
     locals->offset = 0;
     int i = 0;
     while (!at_eof()) {
-        code[i++] = stmt();
+        code[i++] = top_level();
 #ifdef DEBUG
         printf("in program(): i=%d\n", i);
         printf("in program(): %d\n", code[0]->kind == ND_NUM);
@@ -274,3 +289,4 @@ void *program() {
     }
     code[i++] = NULL;
 }
+

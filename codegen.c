@@ -34,6 +34,24 @@ void gen(Node *node) {
             printf("\tpush rax\n");
             return;
 
+        case ND_FUNC:
+            printf("%s:\n", node->name);
+            printf("\tpush rbp\n");
+            printf("\tmov rbp, rsp\n");
+            printf("\tsub rsp, 208\n");
+
+            for (int i = 0; i < node->args->len; i++) {
+                gen_lval(node->args->data[i]);
+                printf("\tpush %s\n", argregs[i]);
+                printf("\tpop rdi\n");
+                printf("\tpop rax\n");
+                printf("\tmov [rax], rdi\n");
+            }
+            for (int i = 0; i < node->stmts->len; i++) {
+                gen(node->stmts->data[i]);
+            }
+            return;
+
         case ND_CALL:
             for (int i = node->args->len - 1; i >= 0; i--) {
                 gen(node->args->data[i]);
@@ -42,7 +60,7 @@ void gen(Node *node) {
                 printf("\tpop rax\n");
                 printf("\tmov %s, rax\n", argregs[i]);
             }
-
+            printf("\tmov rax, 0\n");
             printf("\tcall %s\n", node->name);
             printf("\tpush rax\n");
             return;
