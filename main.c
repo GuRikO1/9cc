@@ -12,7 +12,8 @@ int main(int argc, char **argv) {
 #ifdef DEBUG
     printf("Start 9cc\n");
 #endif
-
+    cur_pos = 0;
+    serial_num = 0;
     token = tokenize(user_input);
 
 #ifdef DEBUG
@@ -34,7 +35,6 @@ int main(int argc, char **argv) {
     printf("%d\n", code[0]->kind==ND_NUM);
 #endif
 
-    serial_num = 0;
     for (int i = 0; code[i]; i++) {
         gen(code[i]);
         printf("\tpop rax\n");

@@ -10,12 +10,12 @@ void error(char *fmt, ...) {
 }
 
 
-void error_at(char *loc, char *fmt, ...) {
+void error_at(int pos, char *fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
 
-    int pos = loc - user_input;
     fprintf(stderr, "%s\n", user_input);
+    fprintf(stderr, "pos = %d\n", pos);
     fprintf(stderr, "%*s", pos, " ");
     fprintf(stderr, "^ ");
     vfprintf(stderr, fmt, ap);

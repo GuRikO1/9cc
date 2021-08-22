@@ -18,14 +18,14 @@ void expect(char *op) {
     } else if (token->kind != TK_RESERVED ||
         strlen(op) != token->len ||
         memcmp(token->str, op, token->len)) {
-        error_at(token->str, "Not '%c'", op);
+        error_at(token->pos, "Not '%c'", op);
     }
     token = token->next;
 }
 
 int expect_number() {
     if (token->kind != TK_NUM) {
-        error_at(token->str, "Not number");
+        error_at(token->pos, "Not number");
     }
     int val = token->val;
     token = token->next;
@@ -73,17 +73,6 @@ Node *new_node_num(int val) {
     return node;
 }
 
-Vector *new_stmt_vec() {
-    Vector *stmts = new_vec();
-    if (consume("{")) {
-        while (!consume("}")) {
-            vec_push(stmts, stmt());
-        }
-    } else {
-        vec_push(stmts, stmt());
-    }
-    return stmts;
-}
 
 Node *expr();
 Node *assign();
@@ -113,16 +102,8 @@ Node *primary() {
                     consume(",");
                     ++len;
                 }
-                printf("len = %d\n", len);
             } else {
-                node->kind = ND_LVAR;
-                ident = calloc(1, sizeof(LVar));
-                ident->next = locals;
-                ident->name = tok->str;
-                ident->len = tok->len;
-                ident->offset = locals->offset + 8;
-                node->offset = ident->offset;
-                locals = ident;
+                error_at(token->pos, "Undefined variable");
             }
         }
         return node;
@@ -220,9 +201,34 @@ Node *assign() {
 
 
 Node *expr() {
+    if (consume_kind(TK_INT)) {
+        Token *tok = consume_kind(TK_IDENT);
+        Node *node = calloc(1, sizeof(Node));
+        node->kind = ND_LVAR;
+        LVar *ident = calloc(1, sizeof(LVar));
+        ident->next = locals;
+        ident->name = tok->str;
+        ident->len = tok->len;
+        ident->offset = locals->offset + 8;
+        node->offset = ident->offset;
+        locals = ident;
+        return node;
+    }
     return assign();
 }
 
+
+Vector *new_stmt_vec() {
+    Vector *stmts = new_vec();
+    if (consume("{")) {
+        while (!consume("}")) {
+            vec_push(stmts, stmt());
+        }
+    } else {
+        vec_push(stmts, stmt());
+    }
+    return stmts;
+}
 
 Node *stmt() {
     Node *node;
@@ -266,23 +272,30 @@ Node *stmt() {
 
 
 Node *top_level() {
-    Token *tok = consume_kind(TK_IDENT);
-    expect("(");
-    Node *node = calloc(1, sizeof(Node));
-    node->kind = ND_FUNC;
-    node->name = tok->str;
-    node->args = new_vec();
-    while (!consume(")")) {
-        vec_push(node->args, primary());
-        consume(",");
-    }
-    node->stmts = new_stmt_vec();
-    return node;
-}
-
-void *program() {
     locals = calloc(1, sizeof(LVar));
     locals->offset = 0;
+    if (consume_kind(TK_INT)) {
+        Token *tok = consume_kind(TK_IDENT);
+        expect("(");
+        Node *node = calloc(1, sizeof(Node));
+        node->kind = ND_FUNC;
+        node->name = tok->str;
+        node->args = new_vec();
+        while (!consume(")")) {
+            vec_push(node->args, expr());
+            consume(",");
+        }
+        node->stmts = new_stmt_vec();
+        return node;
+    } else {
+        error_at(token->pos, "Data definition has no type");
+    }
+
+
+}
+
+
+void *program() {
     int i = 0;
     while (!at_eof()) {
         code[i++] = top_level();

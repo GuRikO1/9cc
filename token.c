@@ -8,11 +8,10 @@ Token *new_token(TokenKind kind, Token *cur, const char *str, int len) {
     strncpy(name, str, len);
     name[len] = '\0';
     tok->str = name;
-// #ifdef DEBUG
-//     printf("in new_token(): tok->str=%s\n", tok->str);
-//     printf("in new_token(): str=%s\n", str);
-// #endif
     tok->len = len;
+    tok->pos = cur_pos;
+    cur_pos += len;
+
     cur->next = tok;
     return tok;
 }
@@ -29,6 +28,7 @@ bool is_alnum(char c) {
 
 static Map *keyword_map() {
   Map *map = new_map();
+  map_put(map, "int", TK_INT);
   map_put(map, "return", TK_RETURN);
   map_put(map, "if", TK_IF);
   map_put(map, "else", TK_ELSE);
@@ -48,6 +48,7 @@ Token *tokenize(char *p) {
         // printf("s = %s\n", p);
         if (isspace(*p)) {
             p++;
+            cur_pos++;
             continue;
         }
 
@@ -89,11 +90,17 @@ Token *tokenize(char *p) {
 
         if (isdigit(*p)) {
             cur = new_token(TK_NUM, cur, p, 0);
-            cur->val = strtol(p, &p , 10);
+            int num = strtol(p, &p , 10);
+            cur->val = num;
+            cur->pos = cur_pos;
+            while (num > 0) {
+                cur_pos++;
+                num /= 10;
+            }
             continue;
         }
 
-        error_at(p, "Cannot tokenize");
+        error_at(cur_pos, "Cannot tokenize");
     }
 
     cur = new_token(TK_EOF, cur, p, 0);
