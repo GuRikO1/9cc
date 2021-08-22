@@ -23,6 +23,7 @@ typedef enum {
     TK_RESERVED,
     TK_IDENT,
     TK_NUM,
+    TK_INT,
     TK_RETURN,
     TK_EOF,
     TK_IF,
@@ -40,6 +41,7 @@ struct Token {
     int val;
     char *str;
     int len;
+    int pos;
 };
 
 
@@ -99,9 +101,10 @@ char *user_input;
 Token *token;
 Node *code[100];
 int serial_num;
+int cur_pos;
 LVar *locals;
 
-void error_at(char *loc, char *fmt, ...);
+void error_at(int pos, char *fmt, ...);
 void error(char *fmt, ...);
 
 Vector *new_vec();
